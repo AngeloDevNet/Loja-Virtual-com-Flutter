@@ -9,12 +9,12 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController passController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
+   
   @override
   Widget build(BuildContext context) {
 
-    
-    
+    bool hidePass = true; 
+
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -81,12 +81,21 @@ class LoginScreen extends StatelessWidget {
                       controller: passController,
                       enabled: !userManager.loading,
                       maxLength: 6,
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                           hintText: "Senha", 
-                          icon: Icon(Icons.lock_outline)
+                          icon: Icon(Icons.lock_outline),
+                          suffix: IconButton(
+                            onPressed: (){
+                              hidePass = !hidePass;
+                              print(hidePass.toString() + "_______________________________________________________");
+                            },
+                            icon: hidePass
+                              ? Icon(Icons.visibility)
+                              : Icon(Icons.visibility_off),
+                          ),
                         ),
                       autocorrect: false,
-                      obscureText: true,
+                      obscureText: hidePass,
                       validator: (pass) {
                         if (pass.isEmpty || pass.length < 6) {
                           return "Senha inválida.";
@@ -121,8 +130,9 @@ class LoginScreen extends StatelessWidget {
                                 if (formKey.currentState.validate()) {
                                   userManager.signIn(
                                       user: User(
-                                          email: emailController.text,
-                                          password: passController.text),
+                                        email: emailController.text,
+                                        password: passController.text,
+                                      ),
                                       onFail: (e) {
                                         scaffoldKey.currentState.showSnackBar(
                                           SnackBar(
@@ -133,15 +143,15 @@ class LoginScreen extends StatelessWidget {
                                       },
                                       onSuccess: () {
                                         print("Sucesso ao fazer SignIN______________________________");
-                                        // TODO FECHAR TELA LOGIN
-                                      });
+                                        Navigator.of(context).pop();
+                                      }
+                                  );
                                 }
                               },
                         color: Theme.of(context).primaryColor,
                         textColor: Colors.white,
                         child: userManager.loading
-                            ? Padding(
-                                padding: EdgeInsets.all(8),
+                            ? Center(
                                 child: CircularProgressIndicator(
                                   valueColor: AlwaysStoppedAnimation(
                                       Theme.of(context).primaryColor),

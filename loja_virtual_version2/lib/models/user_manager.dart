@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:loja_virtual_version2/helpers/firebase_erros.dart';
 import 'user.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 class UserManager extends ChangeNotifier {
@@ -12,26 +13,34 @@ class UserManager extends ChangeNotifier {
   }
 
   final FirebaseAuth auth = FirebaseAuth.instance;
+  final Firestore firestore = Firestore.instance;
 
-  FirebaseUser user;
+  User user;
   bool _loading = false;
   bool get loading => _loading;
+  bool get isLoggedIn => user != null;      // returna valor logico se usuario estar logado ou não
   
+  void signOut(){
+    auth.signOut();
+    user = null;
+    notifyListeners();
+  }
 
   Future<void> signIn({User user, Function onFail, Function onSuccess}) async {
     loading = true;
     try {
       final AuthResult result = await auth.signInWithEmailAndPassword(
         email: user.email, password: user.password);
-        //await Future.delayed(Duration(seconds: 10));  // delay programado
-        this.user = result.user;
+        //await Future.delayed(Duration(seconds: 1x'0));  // delay programado
+        await _loadCurrentUser(firebaseUser: result.user);
         onSuccess();
         print("POS LOGIN RETURN THIS USER: "+ result.user.uid);
     } on PlatformException catch (e){
       print("CATCH, RETURN THIS ERROR: "+ e.toString());
-      await Future.delayed(Duration(seconds: 10));
+      //await Future.delayed(Duration(seconds: 10));
       onFail(getErrorString(e.code));
     }
+
     loading = false;
   }
 
@@ -42,6 +51,7 @@ class UserManager extends ChangeNotifier {
 
       final AuthResult result = await auth.createUserWithEmailAndPassword(email: user.email, password: user.password);
       user.id = result.user.uid;
+      this.user = user;
       await user.saveData();        // comando que envia as informações para o firebase
       onSuccess();
 
@@ -52,13 +62,15 @@ class UserManager extends ChangeNotifier {
 
   }
 
-  Future<void> _loadCurrentUser() async {
-    final FirebaseUser currentUser = await auth.currentUser();
+  Future<void> _loadCurrentUser({FirebaseUser firebaseUser}) async {
+    final FirebaseUser currentUser = firebaseUser ?? await auth.currentUser(); // ser "firebaseUser" != de nulo então usa variavel firebaseuser
     if(currentUser != null){
-      user = currentUser;
-      print(" POS LAODCURRENTUSER, USUÁRIOS   ========= " + user.uid + currentUser.uid);
+      final DocumentSnapshot docUser = await firestore.collection("users").document(currentUser.uid).get();
+      user = User.fromDocument(docUser);
+      print("____________________ ${user.name} ____________________  " + user.email + "____________________");
+      notifyListeners();
     }
-    notifyListeners();
+    
   }
 
   set loading(bool value){
