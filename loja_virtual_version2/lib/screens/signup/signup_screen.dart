@@ -108,7 +108,7 @@ class SignUpScreen extends StatelessWidget {
                        
                       color: Theme.of(context).primaryColor,
                       disabledColor:
-                          Theme.of(context).primaryColor.withAlpha(100),
+                        Theme.of(context).primaryColor.withAlpha(100),
                       textColor: Colors.white,
                       onPressed: userManager.loading 
                       ? null

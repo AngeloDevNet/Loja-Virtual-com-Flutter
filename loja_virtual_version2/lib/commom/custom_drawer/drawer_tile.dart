@@ -19,7 +19,7 @@ class DrawerTile extends StatelessWidget {
     return InkWell(
       onTap: (){
         context.read<PageManager>().setPage(page);        // .READ usado dentro de funções // quando clicado em um botão que estar drawer, é enviado para o PageManager a tela que foi clicada
-        print("toquei $page");
+        debugPrint("TOQUEI $page");
       },
       child: SizedBox(
         height: 60,

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:loja_virtual_version2/models/product.dart';
+import 'package:loja_virtual_version2/models/product_manager.dart';
 import 'package:loja_virtual_version2/screens/base/base_screens.dart';
+import 'package:loja_virtual_version2/screens/product/product_screen.dart';
 import 'package:provider/provider.dart';
 import 'models/user_manager.dart';
 import 'package:loja_virtual_version2/screens/signup/signup_screen.dart';
@@ -9,13 +12,22 @@ void main() {
   runApp(MyApp());
 }
 
+// LAZY = Se true, ele só irar ler o "User Maneger" qnd ele for chamado em algum lugar. Se false, ele já ler automaticamente sem ser chamado
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-        create: (_) => UserManager(),
-        lazy: false,        // assim que entri no notify Provider, ele já carrega os dados do usuário. Ou seja, instancia imediatamente o "UserManager"
-        child: MaterialApp(
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => UserManager(),
+          lazy: false,        //PREGUIÇOSO FALSO
+        ),
+        ChangeNotifierProvider(
+          create: (_)=> ProductManager(),
+          lazy: false,
+        ),
+      ],
+      child: MaterialApp(
         title: 'Loja de Willys',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -27,8 +39,8 @@ class MyApp extends StatelessWidget {
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
         initialRoute: "/base",
-        onGenerateRoute: (settings){
-          switch(settings.name){
+        onGenerateRoute: (settings) {
+          switch (settings.name) {
             case '/login':
               return MaterialPageRoute(
                 builder: (_) => LoginScreen(),
@@ -37,8 +49,14 @@ class MyApp extends StatelessWidget {
               return MaterialPageRoute(
                 builder: (_) => SignUpScreen(),
               );
+            case "/product":
+              return MaterialPageRoute(
+                builder: (_) => ProductScreen(
+                  settings.arguments as Product,
+                ),
+              );
             case "/base":
-            default: 
+            default:
               return MaterialPageRoute(
                 builder: (_) => BaseScreen(),
               );
