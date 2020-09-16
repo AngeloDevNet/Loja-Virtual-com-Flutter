@@ -11,6 +11,7 @@ class SignUpScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint("rebuild SignUpScreen");
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
@@ -104,58 +105,60 @@ class SignUpScreen extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 44,
-                    child: RaisedButton(                    
-                       
+                    child: RaisedButton(
                       color: Theme.of(context).primaryColor,
                       disabledColor:
-                        Theme.of(context).primaryColor.withAlpha(100),
+                          Theme.of(context).primaryColor.withAlpha(100),
                       textColor: Colors.white,
-                      onPressed: userManager.loading 
-                      ? null
-                      :() {
-                        if (formKey.currentState.validate()) {
-                          formKey.currentState.save();
-                          if (user.password != user.confirmPassword) {
-                            scaffoldKey.currentState.showSnackBar(
-                              SnackBar(
-                                content: const Text("Senhas não coincidem!"),
-                                backgroundColor: Colors.red,
+                      onPressed: userManager.loading
+                          ? null
+                          : () {
+                              if (formKey.currentState.validate()) {
+                                formKey.currentState.save();
+                                if (user.password != user.confirmPassword) {
+                                  scaffoldKey.currentState.showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          const Text("Senhas não coincidem!"),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  return;
+                                }
+                                // user manager
+                                context.read<UserManager>().signUp(
+                                    user: user,
+                                    onSuccess: () {
+                                      debugPrint(
+                                          "_________SUCESSO AO SE CADASTRAR_________");
+                                      Navigator.of(context).pop();
+                                    },
+                                    onFail: (e) {
+                                      debugPrint(
+                                          "_________ERRO AO SE CADASTRAR_________");
+                                      scaffoldKey.currentState.showSnackBar(
+                                        SnackBar(
+                                          content:
+                                              Text("Falha ao cadastrar: $e"),
+                                          backgroundColor: Colors.red[800],
+                                        ),
+                                      );
+                                    });
+                              }
+                            },
+                      child: userManager.loading
+                          ? CircularProgressIndicator(
+                              strokeWidth: 2,
+                              backgroundColor: Colors.transparent,
+                              valueColor: AlwaysStoppedAnimation(
+                                  Theme.of(context).primaryColor),
+                            )
+                          : Text(
+                              'Criar Conta',
+                              style: TextStyle(
+                                fontSize: 18,
                               ),
-                            );
-                            return;
-                          }
-                          // user manager
-                          context.read<UserManager>().signUp(
-                              user: user,
-                              onSuccess: () {
-                                debugPrint(
-                                    "_________SUCESSO AO SE CADASTRAR_________");
-                                Navigator.of(context).pop();
-                              },
-                              onFail: (e) {
-                                debugPrint(
-                                    "_________ERRO AO SE CADASTRAR_________");
-                                scaffoldKey.currentState.showSnackBar(
-                                  SnackBar(
-                                    content: Text("Falha ao cadastrar: $e"),
-                                    backgroundColor: Colors.red[800],
-                                  ),
-                                );
-                              });
-                        }
-                      },
-                      child: userManager.loading 
-                      ? CircularProgressIndicator(
-                        strokeWidth: 2,
-                        backgroundColor: Colors.transparent,
-                        valueColor: AlwaysStoppedAnimation(Theme.of(context).primaryColor),
-                      )
-                      :Text(
-                        'Criar Conta',
-                        style: TextStyle(
-                          fontSize: 18,
-                        ),
-                      ),
+                            ),
                     ),
                   )
                 ],

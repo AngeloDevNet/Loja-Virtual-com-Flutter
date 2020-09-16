@@ -15,9 +15,12 @@ class User {
   String email;
   String password;
   String confirmPassword;
+  bool admin;
 
   DocumentReference get firestoreRef =>  Firestore.instance.document("users/$id");
   //Firestore.instance.collection("users").document(id);
+
+  CollectionReference get cartReference => firestoreRef.collection("cart");
 
   Future<void> saveData() async {
     await firestoreRef.setData(

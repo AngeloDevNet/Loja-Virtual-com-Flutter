@@ -9,11 +9,11 @@ class LoginScreen extends StatelessWidget {
   final TextEditingController passController = TextEditingController();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-   
+
   @override
   Widget build(BuildContext context) {
-
-    bool hidePass = true; 
+    debugPrint("rebuild LoginScreen");
+    bool hidePass = true;
 
     return Scaffold(
       key: scaffoldKey,
@@ -32,8 +32,7 @@ class LoginScreen extends StatelessWidget {
                 shape: BoxShape.rectangle,
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(15.0),
-                    bottomRight: Radius.circular(15.0)
-                ),
+                    bottomRight: Radius.circular(15.0)),
               ),
               padding: EdgeInsets.all(12),
               child: Text(
@@ -82,18 +81,18 @@ class LoginScreen extends StatelessWidget {
                       enabled: !userManager.loading,
                       maxLength: 6,
                       decoration: InputDecoration(
-                          hintText: "Senha", 
-                          icon: Icon(Icons.lock_outline),
-                          suffix: IconButton(
-                            onPressed: (){
-                              hidePass = !hidePass;
-                              print(hidePass.toString() + "_______________________________________________________");
-                            },
-                            icon: hidePass
+                        hintText: "Senha",
+                        icon: Icon(Icons.lock_outline),
+                        suffix: IconButton(
+                          onPressed: () {
+                            hidePass = !hidePass;
+                            print(hidePass.toString() + "-------");
+                          },
+                          icon: hidePass
                               ? Icon(Icons.visibility)
                               : Icon(Icons.visibility_off),
-                          ),
                         ),
+                      ),
                       autocorrect: false,
                       obscureText: hidePass,
                       validator: (pass) {
@@ -142,10 +141,10 @@ class LoginScreen extends StatelessWidget {
                                         );
                                       },
                                       onSuccess: () {
-                                        print("Sucesso ao fazer SignIN______________________________");
+                                        print(
+                                            "Sucesso ao fazer SignIN______________________________");
                                         Navigator.of(context).pop();
-                                      }
-                                  );
+                                      });
                                 }
                               },
                         color: Theme.of(context).primaryColor,
@@ -153,10 +152,10 @@ class LoginScreen extends StatelessWidget {
                         child: userManager.loading
                             ? Center(
                                 child: CircularProgressIndicator(
-                                  valueColor: AlwaysStoppedAnimation(
-                                      Theme.of(context).primaryColor),
-                                  strokeWidth: 2,
-                                ))
+                                valueColor: AlwaysStoppedAnimation(
+                                    Theme.of(context).primaryColor),
+                                strokeWidth: 2,
+                              ))
                             : Text(
                                 'Entrar',
                                 style: TextStyle(fontSize: 18),

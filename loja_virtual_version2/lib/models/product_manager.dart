@@ -21,7 +21,7 @@ class ProductManager extends ChangeNotifier {
   }
 
   List<Product> get filteredProducts {
-
+  
     final List<Product> filteredProducts = [];
     if(search.isEmpty){
       filteredProducts.addAll(allProducts);
@@ -42,8 +42,15 @@ class ProductManager extends ChangeNotifier {
     }
     this.allProducts = snapProducts.documents.map(
       (p) => Product.fromDocument(p) ).toList();      // .map transforma cada um dos documentos em obejtos do tipo Product depois transformando em uma lista de produtos
-    
     notifyListeners();      // notificar ouvintes.  
+  }
+
+  Product findProductById( String id ) {
+    try {
+      return allProducts.firstWhere((p) => p.id == id);
+    } catch (e) {
+      return null;
+    }
   }
 
 }

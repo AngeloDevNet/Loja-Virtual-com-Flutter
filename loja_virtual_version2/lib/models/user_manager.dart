@@ -45,21 +45,17 @@ class UserManager extends ChangeNotifier {
   }
 
   Future<void> signUp({User user, Function onFail, Function onSuccess}) async {
-
     loading = true;
     try {
-
       final AuthResult result = await auth.createUserWithEmailAndPassword(email: user.email, password: user.password);
       user.id = result.user.uid;
       this.user = user;
       await user.saveData();        // comando que envia as informações para o firebase
       onSuccess();
-
     } on PlatformException catch(e){
       onFail(getErrorString(e.code));
     } 
     loading = false;
-
   }
 
   Future<void> _loadCurrentUser({FirebaseUser firebaseUser}) async {
@@ -67,12 +63,18 @@ class UserManager extends ChangeNotifier {
     if(currentUser != null){
       final DocumentSnapshot docUser = await firestore.collection("users").document(currentUser.uid).get();
       user = User.fromDocument(docUser);
-      print("____________________ ${user.name} ____________________  " + user.email + "____________________");
+
+      final docAdmin = await firestore.collection("admins").document(user.id).get();
+      if( docAdmin.exists ){
+        user.admin = true; 
+      }
+      debugPrint("admin: " + user.admin.toString());    // show if is admin
       notifyListeners();
     }
     
   }
-
+  bool get adminEnabled => user != null && user.admin;
+  
   set loading(bool value){
     _loading = value;
     notifyListeners();

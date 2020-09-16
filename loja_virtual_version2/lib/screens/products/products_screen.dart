@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 class ProductsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    debugPrint("rebuild ProductsScreen");
     return Scaffold(
       drawer: CustomDrawer(),
       appBar: AppBar(
@@ -78,8 +79,18 @@ class ProductsScreen extends StatelessWidget {
               itemCount: filteredProducts.length,
               itemBuilder: (_, index) {
                 return ProductListTile(filteredProducts[index]);
-              });
+              }
+          );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.white,
+        foregroundColor: Theme.of(context).primaryColor,
+        onPressed: (){
+          Navigator.of(context).pushNamed('/cart');
+          
+        },
+        child: Icon(Icons.shopping_cart,),
       ),
     );
   }
