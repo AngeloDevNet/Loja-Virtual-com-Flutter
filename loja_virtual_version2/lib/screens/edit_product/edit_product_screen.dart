@@ -2,11 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:loja_virtual_version2/models/product.dart';
 import 'package:loja_virtual_version2/screens/edit_product/components/images_form.dart';
 
+import 'components/sizes_form.dart';
+
 class EditProductScreen extends StatelessWidget {
 
-  EditProductScreen(this.product);
+  EditProductScreen(Product p) : 
+    editing = p != null,
+    this.product = p != null ? p.clone() : Product();
+
   final Product product;
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  final bool editing;
   
   @override
   Widget build(BuildContext context) {
@@ -14,7 +20,7 @@ class EditProductScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text("Editar Anúncio"),
+        title: Product Text("Editar Anúncio"),
       ),
       body: Form(
         key: formKey,
@@ -75,28 +81,42 @@ class EditProductScreen extends StatelessWidget {
                   TextFormField(
                     initialValue: product.description,
                     decoration: const InputDecoration(
-                      hintText: "",
+                      hintText: "descreva o produto",
                     ),
                     style: TextStyle(
                       fontSize: 16,
+                      fontWeight: FontWeight.w500,
                     ),
                     maxLines: null,
                     validator: (desc){
                       if( desc.isEmpty )
-                        return 'Descrição vazia.';
+                        return 'Descrição vazia';
                       else 
                         return null;
                     },
                   ),
-                  RaisedButton(
-                    onPressed: () {
-                      if (formKey.currentState.validate()) {
-                        print("Válido");
-                      } else {
-                        print("Invalido");
-                      }
-                    },
-                    child: const Text("Salvar"),
+                  SizesForm(product),
+                  const SizedBox(height: 20,),
+                  SizedBox(
+                    height: 44,
+                    child: RaisedButton(
+                      onPressed: () {
+                        if (formKey.currentState.validate()) {
+                          print("Válido");
+                        } else {
+                          print("Invalido");
+                        }
+                      },
+                      color: primaryColor,
+                      disabledColor: primaryColor.withAlpha(100),
+                      textColor: Colors.white,
+                      child: const Text(
+                        "Salvar",
+                        style: TextStyle(
+                          fontSize: 18.0,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

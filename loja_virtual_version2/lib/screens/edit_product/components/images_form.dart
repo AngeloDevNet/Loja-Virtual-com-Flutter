@@ -12,7 +12,7 @@ class ImagesForm extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FormField<List<dynamic>>(
-      initialValue: List.from(product.images),
+      initialValue: product.images,
       validator: (images) {
         if (images.isEmpty) {
           return "Insira ao menos uma imagem";
@@ -86,18 +86,16 @@ class ImagesForm extends StatelessWidget {
                 )),
             ),
           ),
-          if(state.hasError)
+          if (state.hasError)
             Container(
               padding: const EdgeInsets.all(5),
               alignment: Alignment.centerLeft,
-              child: Text(
-                state.errorText,
-                style: TextStyle(
-                  color: Colors.red,
-                  fontSize: 12,
-                )
-              ),
-            ) ,
+              child: Text(state.errorText,
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontSize: 12,
+                  )),
+            ),
         ]);
       },
     );

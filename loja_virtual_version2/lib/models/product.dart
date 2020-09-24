@@ -4,7 +4,11 @@ import 'item_size.dart';
 
 class Product extends ChangeNotifier {
 
-  Product();
+  Product({this.id, this.name, this.description, this.images, this.sizes}){
+    this.images = images ?? [];
+    this.sizes = sizes ?? [];
+  }
+  
   Product.fromDocument(DocumentSnapshot document){
     this.id = document.documentID;
     this.name = document["name"] as String;
@@ -58,5 +62,15 @@ class Product extends ChangeNotifier {
     }
   }
 
-  
+  Product clone(){
+    return Product(
+      id: this.id,
+      name: this.name,
+      description: this.description,
+      images: List.from(images),
+      sizes: sizes.map(
+        (size) => size.clone()
+      ).toList(),
+    );
+  }
 }
