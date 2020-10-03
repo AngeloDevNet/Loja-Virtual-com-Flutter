@@ -20,7 +20,7 @@ class EditProductScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Product Text("Editar Anúncio"),
+        title: Text("Editar Anúncio"),
       ),
       body: Form(
         key: formKey,

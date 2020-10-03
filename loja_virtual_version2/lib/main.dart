@@ -13,6 +13,8 @@ import 'package:loja_virtual_version2/screens/signup/signup_screen.dart';
 import "screens/login/login_screen.dart";
 import 'models/home_manager.dart';
 
+// LEMBRAR DESSE COMANDO  -  flutter clean  - ELE 
+
 void main() {
   runApp(MyApp());
 }
